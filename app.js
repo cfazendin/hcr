@@ -600,29 +600,22 @@
       updateActiveColor(rgb[0], rgb[1], rgb[2]);
     });
 
-    // EyeDropper Handler
-    el.btnEyeDropper.addEventListener('click', async (e) => {
-      e.preventDefault();
-      // Try native OS Screen EyeDropper API first if supported
-      if ('EyeDropper' in window) {
-        try {
-          const eyeDropper = new window.EyeDropper();
-          const result = await eyeDropper.open();
-          if (result && result.sRGBHex) {
-            const rgb = hexToRgb(result.sRGBHex);
-            updateActiveColor(rgb[0], rgb[1], rgb[2]);
-            showToast(`Sampled ${result.sRGBHex} from screen`);
-            return;
-          }
-        } catch (err) {
-          // If user cancelled, don't trigger fallback
-          if (err.name === 'AbortError') return;
-          // If browser threw security / not allowed error, activate in-page dropper
+    // Native Color Picker & Eyedropper launcher
+    const openColorPicker = (e) => {
+      if (e) e.preventDefault();
+      try {
+        if (typeof el.nativeColorPicker.showPicker === 'function') {
+          el.nativeColorPicker.showPicker();
+          return;
         }
+      } catch (err) {
+        // Fallback if showPicker throws or unsupported
       }
-      // Fallback: interactive in-page magnifier eyedropper (does NOT open a dialog box)
-      startInPageEyedropper();
-    });
+      el.nativeColorPicker.click();
+    };
+
+    el.btnEyeDropper.addEventListener('click', openColorPicker);
+    el.activeColorPreview.addEventListener('click', openColorPicker);
 
     // Radio button changes
     el.radioOptions.forEach(radio => {
