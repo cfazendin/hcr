@@ -127,10 +127,16 @@
           <div class="current-color-panel">
             <div class="current-color-preview-box" id="activeColorPreview" title="Current selected target color"></div>
             <div class="color-picker-tools">
-              <input type="color" id="nativeColorPicker" value="#c0c0c0" title="System Color Picker">
-              <button id="btnEyeDropper" class="win-btn btn-sm" title="Pick color from screen">🔍 EyeDropper</button>
+              <input type="color" id="nativeColorPicker" value="#c0c0c0" title="Click to open color picker dialog (includes eyedropper tool)">
+              <button id="btnEyeDropper" class="win-btn btn-sm" title="Screen Eyedropper (Chrome/Edge)">🔍 Eyedropper</button>
             </div>
             <div class="color-hex-badge" id="activeHexBadge">#C0C0C0</div>
+          </div>
+
+          <!-- Quick Palette: Classic 16 HTML Standard Colors -->
+          <div class="quick-palette-container">
+            <span class="quick-palette-title">Classic 16 Palette:</span>
+            <div class="quick-palette-grid" id="quickPaletteGrid"></div>
           </div>
         </section>
 

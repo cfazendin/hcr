@@ -88,6 +88,26 @@
     }
   };
 
+  // Classic 16 HTML Standard Colors
+  const CLASSIC_16_COLORS = [
+    { name: 'Black', hex: '#000000' },
+    { name: 'Silver', hex: '#C0C0C0' },
+    { name: 'Gray', hex: '#808080' },
+    { name: 'White', hex: '#FFFFFF' },
+    { name: 'Maroon', hex: '#800000' },
+    { name: 'Red', hex: '#FF0000' },
+    { name: 'Purple', hex: '#800080' },
+    { name: 'Fuchsia', hex: '#FF00FF' },
+    { name: 'Green', hex: '#008000' },
+    { name: 'Lime', hex: '#00FF00' },
+    { name: 'Olive', hex: '#808000' },
+    { name: 'Yellow', hex: '#FFFF00' },
+    { name: 'Navy', hex: '#000080' },
+    { name: 'Blue', hex: '#0000FF' },
+    { name: 'Teal', hex: '#008080' },
+    { name: 'Aqua', hex: '#00FFFF' }
+  ];
+
   // DOM Elements
   const el = {
     body: document.body,
@@ -109,6 +129,7 @@
     activeHexBadge: document.getElementById('activeHexBadge'),
     nativeColorPicker: document.getElementById('nativeColorPicker'),
     btnEyeDropper: document.getElementById('btnEyeDropper'),
+    quickPaletteGrid: document.getElementById('quickPaletteGrid'),
     
     // Preview Box
     picColor: document.getElementById('picColor'),
@@ -433,21 +454,168 @@
       updateActiveColor(rgb[0], rgb[1], rgb[2]);
     });
 
-    // EyeDropper API
-    el.btnEyeDropper.addEventListener('click', async () => {
+  // Render Classic 16 Palette Swatches
+  function renderQuickPalette() {
+    if (!el.quickPaletteGrid) return;
+    el.quickPaletteGrid.innerHTML = '';
+    CLASSIC_16_COLORS.forEach(item => {
+      const btn = document.createElement('button');
+      btn.className = 'swatch-btn';
+      btn.style.backgroundColor = item.hex;
+      btn.title = `${item.name} (${item.hex})`;
+      btn.setAttribute('aria-label', `${item.name} color`);
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const rgb = hexToRgb(item.hex);
+        updateActiveColor(rgb[0], rgb[1], rgb[2]);
+        showToast(`Applied ${item.name} (${item.hex})`);
+      });
+      el.quickPaletteGrid.appendChild(btn);
+    });
+  }
+
+  // In-Page Interactive Eyedropper Inspector
+  let eyedropperLoupeEl = null;
+  let isDropperActive = false;
+  let lastHoveredHex = null;
+
+  function startInPageEyedropper() {
+    if (isDropperActive) return;
+    isDropperActive = true;
+    document.body.classList.add('eyedropper-active');
+
+    // Create loupe tooltip
+    eyedropperLoupeEl = document.createElement('div');
+    eyedropperLoupeEl.className = 'eyedropper-loupe';
+    eyedropperLoupeEl.innerHTML = '<div class="loupe-swatch"></div><span class="loupe-text">#C0C0C0</span>';
+    document.body.appendChild(eyedropperLoupeEl);
+
+    showToast('🔍 Eyedropper active: Click any spot/color on page to sample (Esc to cancel)');
+
+    const swatch = eyedropperLoupeEl.querySelector('.loupe-swatch');
+    const text = eyedropperLoupeEl.querySelector('.loupe-text');
+
+    function parseColor(str) {
+      if (!str || str === 'transparent' || str === 'rgba(0, 0, 0, 0)') return null;
+      if (str.startsWith('#')) return hexToRgb(str);
+      const match = str.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
+      if (match) return [parseInt(match[1], 10), parseInt(match[2], 10), parseInt(match[3], 10)];
+      return null;
+    }
+
+    function getElementColor(target) {
+      let curr = target;
+      while (curr && curr !== document.body && curr !== document.documentElement) {
+        const style = window.getComputedStyle(curr);
+        const bg = parseColor(style.backgroundColor);
+        if (bg) return bg;
+        const color = parseColor(style.color);
+        if (color) return color;
+        curr = curr.parentElement;
+      }
+      return [192, 192, 192];
+    }
+
+    function onMouseMove(e) {
+      if (!isDropperActive) return;
+      eyedropperLoupeEl.style.left = `${e.clientX}px`;
+      eyedropperLoupeEl.style.top = `${e.clientY}px`;
+
+      eyedropperLoupeEl.style.display = 'none';
+      const target = document.elementFromPoint(e.clientX, e.clientY);
+      eyedropperLoupeEl.style.display = 'flex';
+
+      if (target) {
+        const rgb = getElementColor(target);
+        lastHoveredHex = rgbToHex(rgb[0], rgb[1], rgb[2]);
+        if (swatch) swatch.style.backgroundColor = lastHoveredHex;
+        if (text) text.textContent = lastHoveredHex;
+      }
+    }
+
+    function onDocClick(e) {
+      if (!isDropperActive) return;
+      e.preventDefault();
+      e.stopPropagation();
+
+      if (lastHoveredHex) {
+        const rgb = hexToRgb(lastHoveredHex);
+        updateActiveColor(rgb[0], rgb[1], rgb[2]);
+        showToast(`Sampled color ${lastHoveredHex}`);
+      }
+      stopInPageEyedropper();
+    }
+
+    function onKeyDown(e) {
+      if (e.key === 'Escape' && isDropperActive) {
+        stopInPageEyedropper();
+        showToast('Eyedropper cancelled');
+      }
+    }
+
+    function stopInPageEyedropper() {
+      isDropperActive = false;
+      document.body.classList.remove('eyedropper-active');
+      if (eyedropperLoupeEl) {
+        eyedropperLoupeEl.remove();
+        eyedropperLoupeEl = null;
+      }
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('click', onDocClick, true);
+      window.removeEventListener('keydown', onKeyDown);
+    }
+
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('click', onDocClick, true);
+    window.addEventListener('keydown', onKeyDown);
+  }
+
+  // Event Listeners
+  function attachEventListeners() {
+    // Sliders
+    const handleSliderInput = () => {
+      updateActiveColor(el.hsbRed.value, el.hsbGreen.value, el.hsbBlue.value);
+    };
+    el.hsbRed.addEventListener('input', handleSliderInput);
+    el.hsbGreen.addEventListener('input', handleSliderInput);
+    el.hsbBlue.addEventListener('input', handleSliderInput);
+
+    // Number textboxes
+    const handleNumberInput = () => {
+      updateActiveColor(el.txtRed.value, el.txtGreen.value, el.txtBlue.value);
+    };
+    el.txtRed.addEventListener('input', handleNumberInput);
+    el.txtGreen.addEventListener('input', handleNumberInput);
+    el.txtBlue.addEventListener('input', handleNumberInput);
+
+    // Native Color Picker (when clicked directly)
+    el.nativeColorPicker.addEventListener('input', (e) => {
+      const rgb = hexToRgb(e.target.value);
+      updateActiveColor(rgb[0], rgb[1], rgb[2]);
+    });
+
+    // EyeDropper Handler
+    el.btnEyeDropper.addEventListener('click', async (e) => {
+      e.preventDefault();
+      // Try native OS Screen EyeDropper API first if supported
       if ('EyeDropper' in window) {
         try {
           const eyeDropper = new window.EyeDropper();
           const result = await eyeDropper.open();
-          const rgb = hexToRgb(result.sRGBHex);
-          updateActiveColor(rgb[0], rgb[1], rgb[2]);
-          showToast(`Picked ${result.sRGBHex}`);
-        } catch (e) {
-          // User cancelled dropper
+          if (result && result.sRGBHex) {
+            const rgb = hexToRgb(result.sRGBHex);
+            updateActiveColor(rgb[0], rgb[1], rgb[2]);
+            showToast(`Sampled ${result.sRGBHex} from screen`);
+            return;
+          }
+        } catch (err) {
+          // If user cancelled, don't trigger fallback
+          if (err.name === 'AbortError') return;
+          // If browser threw security / not allowed error, activate in-page dropper
         }
-      } else {
-        el.nativeColorPicker.click();
       }
+      // Fallback: interactive in-page magnifier eyedropper (does NOT open a dialog box)
+      startInPageEyedropper();
     });
 
     // Radio button changes
@@ -602,6 +770,7 @@
 
   // Initialize
   function init() {
+    renderQuickPalette();
     attachEventListeners();
     updateUI();
   }
