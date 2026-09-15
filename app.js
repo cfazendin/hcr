@@ -554,6 +554,7 @@
     }
 
     function stopInPageEyedropper() {
+      if (!isDropperActive) return;
       isDropperActive = false;
       document.body.classList.remove('eyedropper-active');
       if (eyedropperLoupeEl) {
@@ -566,8 +567,13 @@
     }
 
     window.addEventListener('mousemove', onMouseMove);
-    window.addEventListener('click', onDocClick, true);
     window.addEventListener('keydown', onKeyDown);
+    // Delay attaching click listener so the button click itself doesn't close it instantly
+    setTimeout(() => {
+      if (isDropperActive) {
+        window.addEventListener('click', onDocClick, true);
+      }
+    }, 60);
   }
 
   // Event Listeners
