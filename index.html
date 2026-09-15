@@ -251,6 +251,99 @@
         <div class="status-panel status-notice" id="statusNotice">Ready</div>
       </footer>
     </main>
+
+    <!-- Section 1: The 216 Web-Safe Color Palette (Netscape 6x6x6 Cube) -->
+    <section class="content-card" id="webSafeSection">
+      <div class="card-header">
+        <h2>🎨 The 216 "Web-Safe" Palette (1995 Netscape Color Cube)</h2>
+        <span class="card-subtitle">Click any swatch to load into active target</span>
+      </div>
+      <p class="card-intro">
+        In 1995, most personal computer monitors were limited to <strong>256 colors (8-bit color displays)</strong>. 
+        Netscape Navigator reserved 40 colors for the operating system and designated the remaining <strong>216 colors</strong> (combinations of <code>00</code>, <code>33</code>, <code>66</code>, <code>99</code>, <code>CC</code>, and <code>FF</code>) as the official "Web-Safe" palette. Any color outside these 216 would horribly dither into speckled dots on screen!
+      </p>
+      
+      <div class="websafe-palette-container" id="webSafePaletteGrid">
+        <!-- Rendered dynamically by app.js -->
+      </div>
+    </section>
+
+    <!-- Section 2: How the Web Worked in 1995 (HTML 2.0/3.2 vs CSS) -->
+    <section class="content-card" id="historySection">
+      <div class="card-header">
+        <h2>📜 How the Web Worked in 1995: Before CSS Existed</h2>
+      </div>
+      <div class="guide-content">
+        <p>
+          Before Cascading Style Sheets (CSS) was supported by browsers in the late 90s, web page styling was defined directly inside the HTML <code>&lt;body&gt;</code> tag attributes. Every link state and background color had to be hardcoded into raw hex values:
+        </p>
+
+        <div class="comparison-table-wrap">
+          <table class="win-table">
+            <thead>
+              <tr>
+                <th>1995 HTML 2.0 / 3.2 Tag</th>
+                <th>Modern CSS Equivalent</th>
+                <th>What It Styled</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>bgcolor="#C0C0C0"</code></td>
+                <td><code>background-color: #C0C0C0;</code></td>
+                <td>Page canvas background</td>
+              </tr>
+              <tr>
+                <td><code>text="#000000"</code></td>
+                <td><code>color: #000000;</code></td>
+                <td>Body copy / normal text</td>
+              </tr>
+              <tr>
+                <td><code>link="#5500EE"</code></td>
+                <td><code>a:link { color: #5500EE; }</code></td>
+                <td>Unvisited hyperlinks</td>
+              </tr>
+              <tr>
+                <td><code>vlink="#551A8B"</code></td>
+                <td><code>a:visited { color: #551A8B; }</code></td>
+                <td>Visited links stored in browser history</td>
+              </tr>
+              <tr>
+                <td><code>alink="#551A8B"</code></td>
+                <td><code>a:active { color: #551A8B; }</code></td>
+                <td>Active link (held down during mouse click)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="story-box">
+          <h3>📰 The PC Magazine Mystery</h3>
+          <p>
+            This utility was written in 1995 in Visual Basic 4.0 by Christopher Fazendin for personal web authoring and released as freeware. Unbeknownst to the author, <strong>PC Magazine</strong> reviewed and recommended it in their <strong>September 10, 1996</strong> issue—a discovery only made nearly 20 years later when archiving the old floppy disk code to GitHub!
+          </p>
+          <div class="story-links">
+            <a href="https://books.google.com/books?id=xrHwrGq70eAC&printsec=frontcover&num=100#v=onepage&q=christopher%20fazendin&f=false" target="_blank" rel="noopener noreferrer" class="web-link">
+              📖 Read the original PC Magazine Sept 10, 1996 review on Google Books ↗
+            </a>
+            <span class="bullet">•</span>
+            <a href="https://github.com/cfazendin/hcr/tree/legacy-vb4" target="_blank" rel="noopener noreferrer" class="web-link">
+              💾 Browse Original 1995 VB4 Source Code on GitHub ↗
+            </a>
+            <span class="bullet">•</span>
+            <a href="https://cfazendin.com" target="_blank" rel="noopener noreferrer" class="web-link">
+              🏠 Back to cfazendin.com ↗
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Page Footer with cfazendin.com breadcrumb -->
+    <footer class="site-footer">
+      <p>Part of the <a href="https://cfazendin.com" class="web-link">cfazendin.com</a> utilities collection • Built with vanilla HTML/CSS/JS</p>
+    </footer>
+
   </div>
 
   <!-- About Dialog Modal -->

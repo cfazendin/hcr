@@ -130,6 +130,7 @@
     nativeColorPicker: document.getElementById('nativeColorPicker'),
     btnEyeDropper: document.getElementById('btnEyeDropper'),
     quickPaletteGrid: document.getElementById('quickPaletteGrid'),
+    webSafePaletteGrid: document.getElementById('webSafePaletteGrid'),
     
     // Preview Box
     picColor: document.getElementById('picColor'),
@@ -452,6 +453,34 @@
     });
   }
 
+  // Render 216 Netscape Web-Safe Palette (6x6x6 color cube)
+  function renderWebSafePalette() {
+    if (!el.webSafePaletteGrid) return;
+    el.webSafePaletteGrid.innerHTML = '';
+    const steps = ['00', '33', '66', '99', 'CC', 'FF'];
+
+    // Generate 6 x 6 x 6 = 216 colors
+    for (let r = 0; r < 6; r++) {
+      for (let g = 0; g < 6; g++) {
+        for (let b = 0; b < 6; b++) {
+          const hex = `#${steps[r]}${steps[g]}${steps[b]}`;
+          const btn = document.createElement('button');
+          btn.className = 'websafe-swatch';
+          btn.style.backgroundColor = hex;
+          btn.title = `Web-Safe: ${hex}`;
+          btn.setAttribute('aria-label', `Web safe color ${hex}`);
+          btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const rgb = hexToRgb(hex);
+            updateActiveColor(rgb[0], rgb[1], rgb[2]);
+            showToast(`Loaded ${hex} into active target`);
+          });
+          el.webSafePaletteGrid.appendChild(btn);
+        }
+      }
+    }
+  }
+
   // In-Page Interactive Eyedropper Inspector
   let eyedropperLoupeEl = null;
   let isDropperActive = false;
@@ -748,6 +777,7 @@
   // Initialize
   function init() {
     renderQuickPalette();
+    renderWebSafePalette();
     attachEventListeners();
     updateUI();
   }

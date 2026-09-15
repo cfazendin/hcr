@@ -958,6 +958,230 @@ body.theme-modern .web-link {
 }
 
 /* ==========================================================================
+   Additional Content Cards (216 Palette & Guide)
+   ========================================================================== */
+.content-card {
+  margin-top: 16px;
+  background: var(--w95-bg);
+  border: 2px solid;
+  border-color: var(--w95-light) var(--w95-darker) var(--w95-darker) var(--w95-light);
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.4),
+              inset 1px 1px 0 var(--w95-lighter),
+              inset -1px -1px 0 var(--w95-dark);
+  padding: 16px;
+}
+
+.card-header {
+  border-bottom: 2px solid;
+  border-color: var(--w95-dark) var(--w95-light) var(--w95-light) var(--w95-dark);
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.card-header h2 {
+  font-size: 15px;
+  color: #000080;
+  margin: 0;
+}
+
+.card-subtitle {
+  font-size: 11px;
+  color: #555;
+}
+
+.card-intro {
+  font-size: 13px;
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+/* 216 Web-Safe Palette Grid */
+.websafe-palette-container {
+  display: grid;
+  grid-template-columns: repeat(18, 1fr);
+  gap: 3px;
+  padding: 8px;
+  background: #ffffff;
+  border: 2px solid;
+  border-color: var(--w95-darker) var(--w95-light) var(--w95-light) var(--w95-darker);
+  box-shadow: inset 1px 1px 0 #000000;
+}
+
+.websafe-swatch {
+  aspect-ratio: 1 / 1;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  padding: 0;
+  border-radius: 0;
+  transition: transform 0.08s ease, outline 0.08s ease;
+}
+
+.websafe-swatch:hover {
+  transform: scale(1.4);
+  outline: 2px solid #000;
+  z-index: 10;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+/* Comparison Table */
+.comparison-table-wrap {
+  overflow-x: auto;
+  margin: 12px 0;
+}
+
+.win-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  background: #ffffff;
+  border: 2px solid;
+  border-color: var(--w95-darker) var(--w95-light) var(--w95-light) var(--w95-darker);
+}
+
+.win-table th, .win-table td {
+  padding: 6px 10px;
+  border: 1px solid var(--w95-dark);
+  text-align: left;
+}
+
+.win-table th {
+  background: #d4d0c8;
+  font-weight: bold;
+}
+
+.win-table code {
+  font-family: var(--font-mono);
+  background: rgba(0, 0, 0, 0.06);
+  padding: 1px 4px;
+  border-radius: 2px;
+  font-size: 11px;
+}
+
+/* Story Box */
+.story-box {
+  margin-top: 14px;
+  padding: 12px;
+  background: #ffffcc;
+  border: 1px solid #d4c880;
+  border-radius: 2px;
+}
+
+.story-box h3 {
+  font-size: 14px;
+  margin-bottom: 6px;
+  color: #333;
+}
+
+.story-box p {
+  font-size: 13px;
+  line-height: 1.5;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.story-links {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  font-size: 12px;
+}
+
+.bullet {
+  color: #888;
+}
+
+/* Site Footer */
+.site-footer {
+  margin-top: 20px;
+  margin-bottom: 12px;
+  text-align: center;
+  font-size: 12px;
+  color: #ffffff;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.site-footer a {
+  color: #ffff00;
+}
+
+/* Modern Theme Overrides for Cards */
+body.theme-modern .content-card {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+  color: #f8fafc;
+}
+
+body.theme-modern .card-header {
+  border-color: #334155;
+}
+
+body.theme-modern .card-header h2 {
+  color: #38bdf8;
+}
+
+body.theme-modern .card-subtitle {
+  color: #94a3b8;
+}
+
+body.theme-modern .websafe-palette-container {
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 8px;
+}
+
+body.theme-modern .win-table {
+  background: #0f172a;
+  border: 1px solid #334155;
+  color: #f8fafc;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+body.theme-modern .win-table th {
+  background: #1e293b;
+  color: #94a3b8;
+  border-color: #334155;
+}
+
+body.theme-modern .win-table td {
+  border-color: #334155;
+}
+
+body.theme-modern .win-table code {
+  background: #1e293b;
+  color: #38bdf8;
+}
+
+body.theme-modern .story-box {
+  background: #422006;
+  border-color: #78350f;
+  color: #fef08a;
+  border-radius: 8px;
+}
+
+body.theme-modern .story-box h3,
+body.theme-modern .story-box p {
+  color: #fef08a;
+}
+
+body.theme-modern .site-footer {
+  color: #94a3b8;
+  text-shadow: none;
+}
+
+body.theme-modern .site-footer a {
+  color: #38bdf8;
+}
+
+/* ==========================================================================
    Responsive Layout
    ========================================================================== */
 @media (max-width: 768px) {
@@ -982,4 +1206,9 @@ body.theme-modern .web-link {
     width: 60px;
     height: 32px;
   }
+
+  .websafe-palette-container {
+    grid-template-columns: repeat(12, 1fr);
+  }
 }
+
