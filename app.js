@@ -1,465 +1,230 @@
 /**
- * HTML Color Reference (HCR) - Modern Web Edition
- * Faithful recreation & modernization of the 1995 Visual Basic 4 application
- * Originally written by Christopher Fazendin
+ * HTML Color Reference v2.04
+ * Faithful 1:1 JavaScript implementation of frmHCR.frm & frmAbout.frm (Visual Basic 4, 1995)
+ * Original by Christopher Fazendin
  */
 
 (function () {
   'use strict';
 
-  // State
-  const state = {
-    activeTarget: 'background', // 'background' | 'normal' | 'link' | 'vlink' | 'alink'
-    outputFormat: 'html',       // 'html' | 'css'
-    colors: {
-      background: [192, 192, 192],
-      normal: [0, 0, 0],
-      link: [85, 0, 238],
-      vlink: [85, 26, 139],
-      alink: [85, 26, 139]
-    }
-  };
-
-  // Presets definition
-  const PRESETS = {
-    classic: {
-      name: '1995 Default (Silver)',
-      background: [192, 192, 192],
-      normal: [0, 0, 0],
-      link: [85, 0, 238],
-      vlink: [85, 26, 139],
-      alink: [85, 26, 139]
-    },
-    win31: {
-      name: 'Windows 3.1 Hot Dog Stand',
-      background: [0, 0, 0],
-      normal: [255, 255, 0],
-      link: [255, 0, 0],
-      vlink: [255, 140, 0],
-      alink: [255, 255, 255]
-    },
-    geocities: {
-      name: '90s GeoCities Neon',
-      background: [0, 0, 128],
-      normal: [255, 255, 0],
-      link: [0, 255, 255],
-      vlink: [255, 0, 255],
-      alink: [255, 255, 255]
-    },
-    terminal: {
-      name: 'Matrix Green Terminal',
-      background: [13, 17, 23],
-      normal: [0, 255, 102],
-      link: [57, 255, 20],
-      vlink: [0, 143, 17],
-      alink: [255, 255, 255]
-    },
-    cyberpunk: {
-      name: 'Cyberpunk 1997',
-      background: [26, 0, 44],
-      normal: [252, 238, 10],
-      link: [0, 240, 255],
-      vlink: [255, 0, 127],
-      alink: [255, 255, 255]
-    },
-    paper: {
-      name: 'Classic Paper & Ink',
-      background: [251, 240, 217],
-      normal: [43, 43, 43],
-      link: [139, 0, 0],
-      vlink: [75, 0, 130],
-      alink: [178, 34, 34]
-    },
-    solarized: {
-      name: 'Solarized Dark',
-      background: [0, 43, 54],
-      normal: [131, 148, 150],
-      link: [38, 139, 210],
-      vlink: [108, 113, 196],
-      alink: [203, 75, 22]
-    },
-    oceanic: {
-      name: 'Midnight Ocean',
-      background: [15, 23, 42],
-      normal: [226, 232, 240],
-      link: [56, 189, 248],
-      vlink: [168, 85, 247],
-      alink: [244, 63, 94]
-    }
-  };
-
-  // Classic 16 HTML Standard Colors
-  const CLASSIC_16_COLORS = [
-    { name: 'Black', hex: '#000000' },
-    { name: 'Silver', hex: '#C0C0C0' },
-    { name: 'Gray', hex: '#808080' },
-    { name: 'White', hex: '#FFFFFF' },
-    { name: 'Maroon', hex: '#800000' },
-    { name: 'Red', hex: '#FF0000' },
-    { name: 'Purple', hex: '#800080' },
-    { name: 'Fuchsia', hex: '#FF00FF' },
-    { name: 'Green', hex: '#008000' },
-    { name: 'Lime', hex: '#00FF00' },
-    { name: 'Olive', hex: '#808000' },
-    { name: 'Yellow', hex: '#FFFF00' },
-    { name: 'Navy', hex: '#000080' },
-    { name: 'Blue', hex: '#0000FF' },
-    { name: 'Teal', hex: '#008080' },
-    { name: 'Aqua', hex: '#00FFFF' }
-  ];
+  // State matching original VB4 variables:
+  // SelOption: 1 = Background, 2 = Normal, 3 = Link, 4 = VLink, 5 = ALink
+  let SelOption = 1;
+  const BackGrnd = [192, 192, 192];
+  const NormalTxt = [0, 0, 0];
+  const LinkTxt = [85, 0, 238];
+  const VLinkTxt = [85, 26, 139];
+  const ALinkTxt = [85, 26, 139];
 
   // DOM Elements
   const el = {
-    body: document.body,
-    presetSelector: document.getElementById('presetSelector'),
-    btnThemeWin95: document.getElementById('btnThemeWin95'),
-    btnThemeModern: document.getElementById('btnThemeModern'),
-    titleBarClose: document.getElementById('titleBarClose'),
-    
-    // Sliders & inputs
+    // Sliders & Textboxes
     hsbRed: document.getElementById('hsbRed'),
     hsbGreen: document.getElementById('hsbGreen'),
     hsbBlue: document.getElementById('hsbBlue'),
     txtRed: document.getElementById('txtRed'),
     txtGreen: document.getElementById('txtGreen'),
     txtBlue: document.getElementById('txtBlue'),
-    
-    // Swatch & picker
-    activeColorPreview: document.getElementById('activeColorPreview'),
-    activeHexBadge: document.getElementById('activeHexBadge'),
-    nativeColorPicker: document.getElementById('nativeColorPicker'),
-    btnEyeDropper: document.getElementById('btnEyeDropper'),
-    quickPaletteGrid: document.getElementById('quickPaletteGrid'),
-    webSafePaletteGrid: document.getElementById('webSafePaletteGrid'),
-    
-    // Preview Box
+
+    // Options (Radio Buttons)
+    optBackground: document.getElementById('optBackground'),
+    optNormal: document.getElementById('optNormal'),
+    optLink: document.getElementById('optLink'),
+    optVLink: document.getElementById('optVLink'),
+    optALink: document.getElementById('optALink'),
+
+    // PictureBox & Labels
     picColor: document.getElementById('picColor'),
     lblNormal: document.getElementById('lblNormal'),
     lblLink: document.getElementById('lblLink'),
     lblVLink: document.getElementById('lblVLink'),
     lblALink: document.getElementById('lblALink'),
-    
-    // Contrast badges
-    contrastNormal: document.getElementById('contrastNormal'),
-    contrastLink: document.getElementById('contrastLink'),
-    contrastVLink: document.getElementById('contrastVLink'),
-    
-    // Radio buttons
-    radioBackground: document.getElementById('optBackground'),
-    radioNormal: document.getElementById('optNormal'),
-    radioLink: document.getElementById('optLink'),
-    radioVLink: document.getElementById('optVLink'),
-    radioALink: document.getElementById('optALink'),
-    radioOptions: document.querySelectorAll('input[name="targetOption"]'),
-    
-    // Tag outputs
+
+    // Tag TextBoxes
     bgTag: document.getElementById('bgTag'),
     txtTag: document.getElementById('txtTag'),
     linkTag: document.getElementById('linkTag'),
     vlinkTag: document.getElementById('vlinkTag'),
     alinkTag: document.getElementById('alinkTag'),
     txtMain: document.getElementById('txtMain'),
-    btnCopyMain: document.getElementById('btnCopyMain'),
-    
-    // Format tabs
-    tabHtml: document.getElementById('tabHtml'),
-    tabCss: document.getElementById('tabCss'),
-    
+
     // Buttons
     cmdAbout: document.getElementById('cmdAbout'),
     cmdExit: document.getElementById('cmdExit'),
-    
-    // Status Bar
-    statusTarget: document.getElementById('statusTarget'),
-    statusRgb: document.getElementById('statusRgb'),
-    statusNotice: document.getElementById('statusNotice'),
-    
+    titleBarClose: document.getElementById('titleBarClose'),
+
+    // Menus
+    menuExit: document.getElementById('menuExit'),
+    menuCopy: document.getElementById('menuCopy'),
+    menuAbout: document.getElementById('menuAbout'),
+
     // Modal
     aboutModal: document.getElementById('aboutModal'),
     modalCloseBtn: document.getElementById('modalCloseBtn'),
     btnModalOk: document.getElementById('btnModalOk'),
-    
-    // Menu items
-    menuResetDefaults: document.getElementById('menuResetDefaults'),
-    menuCopyFullBody: document.getElementById('menuCopyFullBody'),
-    menuCopyCSS: document.getElementById('menuCopyCSS'),
-    menuExportHTML: document.getElementById('menuExportHTML'),
-    menuCopyCurrentHex: document.getElementById('menuCopyCurrentHex'),
-    menuRandomize: document.getElementById('menuRandomize'),
-    menuInvert: document.getElementById('menuInvert'),
-    menuToggleFormat: document.getElementById('menuToggleFormat'),
-    menuToggleContrast: document.getElementById('menuToggleContrast'),
-    menuAbout: document.getElementById('menuAbout'),
-    
+
+    // Web Safe Palette Grid
+    webSafePaletteGrid: document.getElementById('webSafePaletteGrid'),
+
     // Toast
     toast: document.getElementById('toastNotification')
   };
 
-  // Helper Functions
-  function rgbToHex(r, g, b) {
-    const toHex = (c) => {
-      const hex = Math.max(0, Math.min(255, Math.round(c))).toString(16).toUpperCase();
-      return hex.length === 1 ? '0' + hex : hex;
-    };
-    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+  function toHex2(val) {
+    const hex = Math.max(0, Math.min(255, Math.round(val))).toString(16).toUpperCase();
+    return hex.length === 1 ? '0' + hex : hex;
   }
 
   function hexToRgb(hex) {
-    let cleanHex = hex.replace(/^#/, '');
-    if (cleanHex.length === 3) {
-      cleanHex = cleanHex.split('').map(c => c + c).join('');
+    let clean = hex.replace(/^#/, '');
+    if (clean.length === 3) {
+      clean = clean.split('').map(c => c + c).join('');
     }
-    const num = parseInt(cleanHex, 16);
-    if (isNaN(num) || cleanHex.length !== 6) return [0, 0, 0];
+    const num = parseInt(clean, 16);
+    if (isNaN(num)) return [0, 0, 0];
     return [(num >> 16) & 255, (num >> 8) & 255, num & 255];
   }
 
-  function getLuminance(r, g, b) {
-    const a = [r, g, b].map(v => {
-      v /= 255;
-      return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
-    });
-    return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
-  }
-
-  function getContrastRatio(rgb1, rgb2) {
-    const lum1 = getLuminance(rgb1[0], rgb1[1], rgb1[2]);
-    const lum2 = getLuminance(rgb2[0], rgb2[1], rgb2[2]);
-    const brightest = Math.max(lum1, lum2);
-    const darkest = Math.min(lum1, lum2);
-    return (brightest + 0.05) / (darkest + 0.05);
-  }
-
-  function getContrastRating(ratio) {
-    if (ratio >= 7) return { text: `${ratio.toFixed(1)}:1 (AAA)`, color: '#008800' };
-    if (ratio >= 4.5) return { text: `${ratio.toFixed(1)}:1 (AA)`, color: '#006600' };
-    if (ratio >= 3) return { text: `${ratio.toFixed(1)}:1 (Large AA)`, color: '#b8860b' };
-    return { text: `${ratio.toFixed(1)}:1 (Fail)`, color: '#cc0000' };
-  }
-
-  function showToast(message) {
+  function showToast(msg) {
     if (!el.toast) return;
-    el.toast.textContent = message;
+    el.toast.textContent = msg;
     el.toast.classList.add('show');
     clearTimeout(el.toast._timer);
-    el.toast._timer = setTimeout(() => {
-      el.toast.classList.remove('show');
-    }, 2000);
+    el.toast._timer = setTimeout(() => el.toast.classList.remove('show'), 1800);
   }
 
-  function copyToClipboard(text, label = 'Code') {
-    navigator.clipboard.writeText(text).then(() => {
-      showToast(`Copied ${label} to clipboard!`);
-      if (el.statusNotice) el.statusNotice.textContent = 'Copied!';
-      setTimeout(() => {
-        if (el.statusNotice) el.statusNotice.textContent = 'Ready';
-      }, 1500);
-    }).catch(err => {
-      showToast('Error copying to clipboard');
-    });
+  // Faithful ShowHex() from frmHCR.frm
+  function ShowHex() {
+    const bgHex = toHex2(BackGrnd[0]) + toHex2(BackGrnd[1]) + toHex2(BackGrnd[2]);
+    const txtHex = toHex2(NormalTxt[0]) + toHex2(NormalTxt[1]) + toHex2(NormalTxt[2]);
+    const linkHex = toHex2(LinkTxt[0]) + toHex2(LinkTxt[1]) + toHex2(LinkTxt[2]);
+    const vlinkHex = toHex2(VLinkTxt[0]) + toHex2(VLinkTxt[1]) + toHex2(VLinkTxt[2]);
+    const alinkHex = toHex2(ALinkTxt[0]) + toHex2(ALinkTxt[1]) + toHex2(ALinkTxt[2]);
+
+    el.bgTag.value = `bgcolor="#${bgHex}"`;
+    el.txtTag.value = `text="#${txtHex}"`;
+    el.linkTag.value = `link="#${linkHex}"`;
+    el.vlinkTag.value = `vlink="#${vlinkHex}"`;
+    el.alinkTag.value = `alink="#${alinkHex}"`;
+
+    el.txtMain.value = `<body ${el.bgTag.value} ${el.txtTag.value} ${el.linkTag.value} ${el.vlinkTag.value} ${el.alinkTag.value}>`;
   }
 
-  // Update UI & Calculations
-  function updateUI() {
-    const currentRgb = state.colors[state.activeTarget];
-    const r = currentRgb[0];
-    const g = currentRgb[1];
-    const b = currentRgb[2];
-    const hex = rgbToHex(r, g, b);
-
-    // Sync sliders and number boxes
-    el.hsbRed.value = r;
-    el.hsbGreen.value = g;
-    el.hsbBlue.value = b;
-    el.txtRed.value = r;
-    el.txtGreen.value = g;
-    el.txtBlue.value = b;
-
-    // Swatch & picker
-    el.activeColorPreview.style.backgroundColor = hex;
-    el.activeHexBadge.textContent = hex;
-    el.nativeColorPicker.value = hex.toLowerCase();
-
-    // Update live preview elements
-    const bgHex = rgbToHex(...state.colors.background);
-    const txtHex = rgbToHex(...state.colors.normal);
-    const linkHex = rgbToHex(...state.colors.link);
-    const vlinkHex = rgbToHex(...state.colors.vlink);
-    const alinkHex = rgbToHex(...state.colors.alink);
-
-    el.picColor.style.backgroundColor = bgHex;
-    el.lblNormal.style.color = txtHex;
-    el.lblLink.style.color = linkHex;
-    el.lblVLink.style.color = vlinkHex;
-    el.lblALink.style.color = alinkHex;
-
-    // Update preview target highlight
-    document.querySelectorAll('.preview-element').forEach(item => {
-      if (item.dataset.target === state.activeTarget) {
-        item.classList.add('selected-target');
-      } else {
-        item.classList.remove('selected-target');
+  // Faithful FindOption() from frmHCR.frm
+  function FindOption() {
+    if (el.optBackground.checked) {
+      if (SelOption !== 1) {
+        el.hsbRed.value = BackGrnd[0];
+        el.hsbGreen.value = BackGrnd[1];
+        el.hsbBlue.value = BackGrnd[2];
       }
-    });
-
-    // Update tag inputs
-    el.bgTag.value = `bgcolor="${bgHex}"`;
-    el.txtTag.value = `text="${txtHex}"`;
-    el.linkTag.value = `link="${linkHex}"`;
-    el.vlinkTag.value = `vlink="${vlinkHex}"`;
-    el.alinkTag.value = `alink="${alinkHex}"`;
-
-    // Update Main Output Tag / CSS
-    if (state.outputFormat === 'html') {
-      el.txtMain.value = `<body bgcolor="${bgHex}" text="${txtHex}" link="${linkHex}" vlink="${vlinkHex}" alink="${alinkHex}">`;
+      el.txtRed.value = el.hsbRed.value;
+      el.txtGreen.value = el.hsbGreen.value;
+      el.txtBlue.value = el.hsbBlue.value;
+      BackGrnd[0] = parseInt(el.hsbRed.value, 10);
+      BackGrnd[1] = parseInt(el.hsbGreen.value, 10);
+      BackGrnd[2] = parseInt(el.hsbBlue.value, 10);
+      SelOption = 1;
+    } else if (el.optNormal.checked) {
+      if (SelOption !== 2) {
+        el.hsbRed.value = NormalTxt[0];
+        el.hsbGreen.value = NormalTxt[1];
+        el.hsbBlue.value = NormalTxt[2];
+      }
+      el.txtRed.value = el.hsbRed.value;
+      el.txtGreen.value = el.hsbGreen.value;
+      el.txtBlue.value = el.hsbBlue.value;
+      NormalTxt[0] = parseInt(el.hsbRed.value, 10);
+      NormalTxt[1] = parseInt(el.hsbGreen.value, 10);
+      NormalTxt[2] = parseInt(el.hsbBlue.value, 10);
+      SelOption = 2;
+    } else if (el.optLink.checked) {
+      if (SelOption !== 3) {
+        el.hsbRed.value = LinkTxt[0];
+        el.hsbGreen.value = LinkTxt[1];
+        el.hsbBlue.value = LinkTxt[2];
+      }
+      el.txtRed.value = el.hsbRed.value;
+      el.txtGreen.value = el.hsbGreen.value;
+      el.txtBlue.value = el.hsbBlue.value;
+      LinkTxt[0] = parseInt(el.hsbRed.value, 10);
+      LinkTxt[1] = parseInt(el.hsbGreen.value, 10);
+      LinkTxt[2] = parseInt(el.hsbBlue.value, 10);
+      SelOption = 3;
+    } else if (el.optVLink.checked) {
+      if (SelOption !== 4) {
+        el.hsbRed.value = VLinkTxt[0];
+        el.hsbGreen.value = VLinkTxt[1];
+        el.hsbBlue.value = VLinkTxt[2];
+      }
+      el.txtRed.value = el.hsbRed.value;
+      el.txtGreen.value = el.hsbGreen.value;
+      el.txtBlue.value = el.hsbBlue.value;
+      VLinkTxt[0] = parseInt(el.hsbRed.value, 10);
+      VLinkTxt[1] = parseInt(el.hsbGreen.value, 10);
+      VLinkTxt[2] = parseInt(el.hsbBlue.value, 10);
+      SelOption = 4;
     } else {
-      el.txtMain.value = `body {\n  background-color: ${bgHex};\n  color: ${txtHex};\n}\na:link {\n  color: ${linkHex};\n}\na:visited {\n  color: ${vlinkHex};\n}\na:active {\n  color: ${alinkHex};\n}`;
+      if (SelOption !== 5) {
+        el.hsbRed.value = ALinkTxt[0];
+        el.hsbGreen.value = ALinkTxt[1];
+        el.hsbBlue.value = ALinkTxt[2];
+      }
+      el.txtRed.value = el.hsbRed.value;
+      el.txtGreen.value = el.hsbGreen.value;
+      el.txtBlue.value = el.hsbBlue.value;
+      ALinkTxt[0] = parseInt(el.hsbRed.value, 10);
+      ALinkTxt[1] = parseInt(el.hsbGreen.value, 10);
+      ALinkTxt[2] = parseInt(el.hsbBlue.value, 10);
+      SelOption = 5;
+    }
+  }
+
+  // Faithful FindColor() from frmHCR.frm
+  function FindColor() {
+    FindOption();
+    const r = parseInt(el.hsbRed.value, 10);
+    const g = parseInt(el.hsbGreen.value, 10);
+    const b = parseInt(el.hsbBlue.value, 10);
+    const rgbStr = `rgb(${r}, ${g}, ${b})`;
+
+    switch (SelOption) {
+      case 1:
+        el.picColor.style.backgroundColor = rgbStr;
+        break;
+      case 2:
+        el.lblNormal.style.color = rgbStr;
+        break;
+      case 3:
+        el.lblLink.style.color = rgbStr;
+        break;
+      case 4:
+        el.lblVLink.style.color = rgbStr;
+        break;
+      case 5:
+        el.lblALink.style.color = rgbStr;
+        break;
     }
 
-    // Update Contrast Ratings
-    const bgRgb = state.colors.background;
-    const contrastNormal = getContrastRatio(bgRgb, state.colors.normal);
-    const contrastLink = getContrastRatio(bgRgb, state.colors.link);
-    const contrastVLink = getContrastRatio(bgRgb, state.colors.vlink);
-
-    const rNormal = getContrastRating(contrastNormal);
-    const rLink = getContrastRating(contrastLink);
-    const rVLink = getContrastRating(contrastVLink);
-
-    el.contrastNormal.innerHTML = `Text: <strong style="color:${rNormal.color}">${rNormal.text}</strong>`;
-    el.contrastLink.innerHTML = `Link: <strong style="color:${rLink.color}">${rLink.text}</strong>`;
-    el.contrastVLink.innerHTML = `Visited: <strong style="color:${rVLink.color}">${rVLink.text}</strong>`;
-
-    // Update Status Bar
-    const targetNames = {
-      background: 'Background',
-      normal: 'Normal Text',
-      link: 'Link Text',
-      vlink: 'Visited Link',
-      alink: 'Active Link'
-    };
-    el.statusTarget.textContent = `Active: ${targetNames[state.activeTarget]} (${hex})`;
-    el.statusRgb.textContent = `RGB(${r}, ${g}, ${b})`;
+    ShowHex();
   }
 
-  function setActiveTarget(target) {
-    if (!state.colors[target]) return;
-    state.activeTarget = target;
-
-    // Sync radio buttons
-    el.radioOptions.forEach(radio => {
-      radio.checked = (radio.value === target);
-    });
-
-    updateUI();
+  // Apply a color directly to active target (used by 216 palette)
+  function applyColorToActiveTarget(hex) {
+    const rgb = hexToRgb(hex);
+    el.hsbRed.value = rgb[0];
+    el.hsbGreen.value = rgb[1];
+    el.hsbBlue.value = rgb[2];
+    FindColor();
+    showToast(`Loaded ${hex}`);
   }
 
-  function updateActiveColor(r, g, b) {
-    state.colors[state.activeTarget] = [
-      Math.max(0, Math.min(255, parseInt(r, 10) || 0)),
-      Math.max(0, Math.min(255, parseInt(g, 10) || 0)),
-      Math.max(0, Math.min(255, parseInt(g, 10) || 0))
-    ];
-    // Re-verify exact assignments
-    state.colors[state.activeTarget][0] = Math.max(0, Math.min(255, parseInt(r, 10) || 0));
-    state.colors[state.activeTarget][1] = Math.max(0, Math.min(255, parseInt(g, 10) || 0));
-    state.colors[state.activeTarget][2] = Math.max(0, Math.min(255, parseInt(b, 10) || 0));
-    updateUI();
-  }
-
-  function loadPreset(presetKey) {
-    const p = PRESETS[presetKey];
-    if (!p) return;
-    state.colors.background = [...p.background];
-    state.colors.normal = [...p.normal];
-    state.colors.link = [...p.link];
-    state.colors.vlink = [...p.vlink];
-    state.colors.alink = [...p.alink];
-    updateUI();
-    showToast(`Loaded preset: ${p.name}`);
-  }
-
-  function randomizeColors() {
-    const randomByte = () => Math.floor(Math.random() * 256);
-    Object.keys(state.colors).forEach(key => {
-      state.colors[key] = [randomByte(), randomByte(), randomByte()];
-    });
-    updateUI();
-    showToast('Randomized color scheme!');
-  }
-
-  function invertColors() {
-    Object.keys(state.colors).forEach(key => {
-      state.colors[key] = state.colors[key].map(c => 255 - c);
-    });
-    updateUI();
-    showToast('Inverted color scheme!');
-  }
-
-  function exportHTMLFile() {
-    const bgHex = rgbToHex(...state.colors.background);
-    const txtHex = rgbToHex(...state.colors.normal);
-    const linkHex = rgbToHex(...state.colors.link);
-    const vlinkHex = rgbToHex(...state.colors.vlink);
-    const alinkHex = rgbToHex(...state.colors.alink);
-
-    const htmlContent = `<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>HTML Color Reference - Sample Page</title>
-</head>
-<body bgcolor="${bgHex}" text="${txtHex}" link="${linkHex}" vlink="${vlinkHex}" alink="${alinkHex}">
-  <h1>Welcome to your HTML 2.0 / 3.2 Page!</h1>
-  <p>This is standard normal text rendered with the text attribute.</p>
-  <p><a href="#sample-link">This is a standard hypertext link</a></p>
-  <p><a href="">This is a visited hypertext link</a></p>
-  <hr>
-  <p><small>Created with HTML Color Reference Web Edition (orig. 1995 by Christopher Fazendin)</small></p>
-</body>
-</html>`;
-
-    const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'color_sample.html';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    showToast('Exported sample HTML file!');
-  }
-
-
-
-  // Render Classic 16 Palette Swatches
-  function renderQuickPalette() {
-    if (!el.quickPaletteGrid) return;
-    el.quickPaletteGrid.innerHTML = '';
-    CLASSIC_16_COLORS.forEach(item => {
-      const btn = document.createElement('button');
-      btn.className = 'swatch-btn';
-      btn.style.backgroundColor = item.hex;
-      btn.title = `${item.name} (${item.hex})`;
-      btn.setAttribute('aria-label', `${item.name} color`);
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        const rgb = hexToRgb(item.hex);
-        updateActiveColor(rgb[0], rgb[1], rgb[2]);
-        showToast(`Applied ${item.name} (${item.hex})`);
-      });
-      el.quickPaletteGrid.appendChild(btn);
-    });
-  }
-
-  // Render 216 Netscape Web-Safe Palette (6x6x6 color cube)
+  // Render 216 Netscape Web-Safe Palette
   function renderWebSafePalette() {
     if (!el.webSafePaletteGrid) return;
     el.webSafePaletteGrid.innerHTML = '';
     const steps = ['00', '33', '66', '99', 'CC', 'FF'];
 
-    // Generate 6 x 6 x 6 = 216 colors
     for (let r = 0; r < 6; r++) {
       for (let g = 0; g < 6; g++) {
         for (let b = 0; b < 6; b++) {
@@ -468,12 +233,10 @@
           btn.className = 'websafe-swatch';
           btn.style.backgroundColor = hex;
           btn.title = `Web-Safe: ${hex}`;
-          btn.setAttribute('aria-label', `Web safe color ${hex}`);
+          btn.setAttribute('aria-label', `Web-Safe ${hex}`);
           btn.addEventListener('click', (e) => {
             e.preventDefault();
-            const rgb = hexToRgb(hex);
-            updateActiveColor(rgb[0], rgb[1], rgb[2]);
-            showToast(`Loaded ${hex} into active target`);
+            applyColorToActiveTarget(hex);
           });
           el.webSafePaletteGrid.appendChild(btn);
         }
@@ -481,305 +244,125 @@
     }
   }
 
-  // In-Page Interactive Eyedropper Inspector
-  let eyedropperLoupeEl = null;
-  let isDropperActive = false;
-  let lastHoveredHex = null;
-
-  function startInPageEyedropper() {
-    if (isDropperActive) return;
-    isDropperActive = true;
-    document.body.classList.add('eyedropper-active');
-
-    // Create loupe tooltip
-    eyedropperLoupeEl = document.createElement('div');
-    eyedropperLoupeEl.className = 'eyedropper-loupe';
-    eyedropperLoupeEl.innerHTML = '<div class="loupe-swatch"></div><span class="loupe-text">#C0C0C0</span>';
-    document.body.appendChild(eyedropperLoupeEl);
-
-    showToast('🔍 Eyedropper active: Click any spot/color on page to sample (Esc to cancel)');
-
-    const swatch = eyedropperLoupeEl.querySelector('.loupe-swatch');
-    const text = eyedropperLoupeEl.querySelector('.loupe-text');
-
-    function parseColor(str) {
-      if (!str || str === 'transparent' || str === 'rgba(0, 0, 0, 0)') return null;
-      if (str.startsWith('#')) return hexToRgb(str);
-      const match = str.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
-      if (match) return [parseInt(match[1], 10), parseInt(match[2], 10), parseInt(match[3], 10)];
-      return null;
-    }
-
-    function getElementColor(target) {
-      let curr = target;
-      while (curr && curr !== document.body && curr !== document.documentElement) {
-        const style = window.getComputedStyle(curr);
-        const bg = parseColor(style.backgroundColor);
-        if (bg) return bg;
-        const color = parseColor(style.color);
-        if (color) return color;
-        curr = curr.parentElement;
-      }
-      return [192, 192, 192];
-    }
-
-    function onMouseMove(e) {
-      if (!isDropperActive) return;
-      eyedropperLoupeEl.style.left = `${e.clientX}px`;
-      eyedropperLoupeEl.style.top = `${e.clientY}px`;
-
-      eyedropperLoupeEl.style.display = 'none';
-      const target = document.elementFromPoint(e.clientX, e.clientY);
-      eyedropperLoupeEl.style.display = 'flex';
-
-      if (target) {
-        const rgb = getElementColor(target);
-        lastHoveredHex = rgbToHex(rgb[0], rgb[1], rgb[2]);
-        if (swatch) swatch.style.backgroundColor = lastHoveredHex;
-        if (text) text.textContent = lastHoveredHex;
-      }
-    }
-
-    function onDocClick(e) {
-      if (!isDropperActive) return;
-      e.preventDefault();
-      e.stopPropagation();
-
-      if (lastHoveredHex) {
-        const rgb = hexToRgb(lastHoveredHex);
-        updateActiveColor(rgb[0], rgb[1], rgb[2]);
-        showToast(`Sampled color ${lastHoveredHex}`);
-      }
-      stopInPageEyedropper();
-    }
-
-    function onKeyDown(e) {
-      if (e.key === 'Escape' && isDropperActive) {
-        stopInPageEyedropper();
-        showToast('Eyedropper cancelled');
-      }
-    }
-
-    function stopInPageEyedropper() {
-      if (!isDropperActive) return;
-      isDropperActive = false;
-      document.body.classList.remove('eyedropper-active');
-      if (eyedropperLoupeEl) {
-        eyedropperLoupeEl.remove();
-        eyedropperLoupeEl = null;
-      }
-      window.removeEventListener('mousemove', onMouseMove);
-      window.removeEventListener('click', onDocClick, true);
-      window.removeEventListener('keydown', onKeyDown);
-    }
-
-    window.addEventListener('mousemove', onMouseMove);
-    window.addEventListener('keydown', onKeyDown);
-    // Delay attaching click listener so the button click itself doesn't close it instantly
-    setTimeout(() => {
-      if (isDropperActive) {
-        window.addEventListener('click', onDocClick, true);
-      }
-    }, 60);
-  }
-
   // Event Listeners
   function attachEventListeners() {
     // Sliders
-    const handleSliderInput = () => {
-      updateActiveColor(el.hsbRed.value, el.hsbGreen.value, el.hsbBlue.value);
-    };
-    el.hsbRed.addEventListener('input', handleSliderInput);
-    el.hsbGreen.addEventListener('input', handleSliderInput);
-    el.hsbBlue.addEventListener('input', handleSliderInput);
+    el.hsbRed.addEventListener('input', () => FindColor());
+    el.hsbGreen.addEventListener('input', () => FindColor());
+    el.hsbBlue.addEventListener('input', () => FindColor());
 
-    // Number textboxes
-    const handleNumberInput = () => {
-      updateActiveColor(el.txtRed.value, el.txtGreen.value, el.txtBlue.value);
+    // Textboxes Keypress / Enter
+    const handleTxtInput = (txtInput, slider) => {
+      let val = parseInt(txtInput.value.replace(/[^0-9]/g, ''), 10);
+      if (isNaN(val)) val = 0;
+      val = Math.max(0, Math.min(255, val));
+      slider.value = val;
+      FindColor();
     };
-    el.txtRed.addEventListener('input', handleNumberInput);
-    el.txtGreen.addEventListener('input', handleNumberInput);
-    el.txtBlue.addEventListener('input', handleNumberInput);
 
-    // Native Color Picker (when clicked directly)
-    el.nativeColorPicker.addEventListener('input', (e) => {
-      const rgb = hexToRgb(e.target.value);
-      updateActiveColor(rgb[0], rgb[1], rgb[2]);
+    el.txtRed.addEventListener('input', () => handleTxtInput(el.txtRed, el.hsbRed));
+    el.txtGreen.addEventListener('input', () => handleTxtInput(el.txtGreen, el.hsbGreen));
+    el.txtBlue.addEventListener('input', () => handleTxtInput(el.txtBlue, el.hsbBlue));
+
+    // Radio Options Click
+    [el.optBackground, el.optNormal, el.optLink, el.optVLink, el.optALink].forEach(opt => {
+      opt.addEventListener('change', () => FindOption());
     });
 
-    // Native Color Picker & Eyedropper launcher
-    const openColorPicker = (e) => {
-      if (e) e.preventDefault();
-      try {
-        if (typeof el.nativeColorPicker.showPicker === 'function') {
-          el.nativeColorPicker.showPicker();
-          return;
-        }
-      } catch (err) {
-        // Fallback if showPicker throws or unsupported
-      }
-      el.nativeColorPicker.click();
-    };
-
-    el.btnEyeDropper.addEventListener('click', openColorPicker);
-    el.activeColorPreview.addEventListener('click', openColorPicker);
-
-    // Radio button changes
-    el.radioOptions.forEach(radio => {
-      radio.addEventListener('change', (e) => {
-        setActiveTarget(e.target.value);
-      });
-    });
-
-    // Preview element clicks
+    // PictureBox & Labels Click (faithful to VB4 events)
     el.picColor.addEventListener('click', (e) => {
       if (e.target === el.picColor) {
-        setActiveTarget('background');
+        el.optBackground.checked = true;
+        FindOption();
       }
     });
 
-    [el.lblNormal, el.lblLink, el.lblVLink, el.lblALink].forEach(item => {
-      item.addEventListener('click', (e) => {
-        e.stopPropagation();
-        setActiveTarget(item.dataset.target);
+    el.lblNormal.addEventListener('click', (e) => {
+      e.stopPropagation();
+      el.optNormal.checked = true;
+      FindOption();
+    });
+
+    el.lblLink.addEventListener('click', (e) => {
+      e.stopPropagation();
+      el.optLink.checked = true;
+      FindOption();
+    });
+
+    el.lblVLink.addEventListener('click', (e) => {
+      e.stopPropagation();
+      el.optVLink.checked = true;
+      FindOption();
+    });
+
+    el.lblALink.addEventListener('click', (e) => {
+      e.stopPropagation();
+      el.optALink.checked = true;
+      FindOption();
+    });
+
+    // Auto-select text on click for tag boxes
+    [el.bgTag, el.txtTag, el.linkTag, el.vlinkTag, el.alinkTag, el.txtMain].forEach(box => {
+      box.addEventListener('click', () => {
+        box.select();
+        navigator.clipboard.writeText(box.value).then(() => {
+          showToast(`Copied: ${box.value}`);
+        }).catch(() => {});
       });
-      item.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          setActiveTarget(item.dataset.target);
-        }
-      });
-    });
-
-    // Copy buttons for individual tag inputs
-    document.querySelectorAll('.btn-copy').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const targetId = btn.dataset.copyTarget;
-        const targetInput = document.getElementById(targetId);
-        if (targetInput) {
-          copyToClipboard(targetInput.value, targetInput.value);
-        }
-      });
-    });
-
-    // Copy full tag / CSS button
-    el.btnCopyMain.addEventListener('click', () => {
-      copyToClipboard(el.txtMain.value, state.outputFormat === 'html' ? '<body> tag' : 'CSS rules');
-    });
-
-    // Output Format tabs (HTML vs CSS)
-    el.tabHtml.addEventListener('click', () => {
-      state.outputFormat = 'html';
-      el.tabHtml.classList.add('active');
-      el.tabCss.classList.remove('active');
-      el.btnCopyMain.textContent = 'Copy Tag';
-      updateUI();
-    });
-
-    el.tabCss.addEventListener('click', () => {
-      state.outputFormat = 'css';
-      el.tabCss.classList.add('active');
-      el.tabHtml.classList.remove('active');
-      el.btnCopyMain.textContent = 'Copy CSS';
-      updateUI();
-    });
-
-    // Preset selector
-    el.presetSelector.addEventListener('change', (e) => {
-      loadPreset(e.target.value);
-    });
-
-    // Theme Switchers
-    el.btnThemeWin95.addEventListener('click', () => {
-      el.body.className = 'theme-win95';
-      el.btnThemeWin95.classList.add('active');
-      el.btnThemeModern.classList.remove('active');
-    });
-
-    el.btnThemeModern.addEventListener('click', () => {
-      el.body.className = 'theme-modern';
-      el.btnThemeModern.classList.add('active');
-      el.btnThemeWin95.classList.remove('active');
     });
 
     // About Modal
-    const openAboutModal = () => {
+    const openAbout = () => {
       el.aboutModal.classList.add('open');
-      el.aboutModal.setAttribute('aria-hidden', 'false');
       el.btnModalOk.focus();
     };
+    const closeAbout = () => el.aboutModal.classList.remove('open');
 
-    const closeAboutModal = () => {
-      el.aboutModal.classList.remove('open');
-      el.aboutModal.setAttribute('aria-hidden', 'true');
-    };
-
-    el.cmdAbout.addEventListener('click', openAboutModal);
-    el.menuAbout.addEventListener('click', openAboutModal);
-    el.modalCloseBtn.addEventListener('click', closeAboutModal);
-    el.btnModalOk.addEventListener('click', closeAboutModal);
+    el.cmdAbout.addEventListener('click', openAbout);
+    el.menuAbout.addEventListener('click', openAbout);
+    el.modalCloseBtn.addEventListener('click', closeAbout);
+    el.btnModalOk.addEventListener('click', closeAbout);
     el.aboutModal.addEventListener('click', (e) => {
-      if (e.target === el.aboutModal) closeAboutModal();
+      if (e.target === el.aboutModal) closeAbout();
     });
 
-    // Exit Button
+    // Exit
     const handleExit = () => {
       if (confirm('Exit HTML Color Reference?')) {
-        showToast('Application closed. You can refresh the page to reload.');
+        window.close();
       }
     };
     el.cmdExit.addEventListener('click', handleExit);
+    el.menuExit.addEventListener('click', handleExit);
     el.titleBarClose.addEventListener('click', handleExit);
 
-    // Menu Bar actions
-    el.menuResetDefaults.addEventListener('click', () => loadPreset('classic'));
-    el.menuCopyFullBody.addEventListener('click', () => {
-      const bgHex = rgbToHex(...state.colors.background);
-      const txtHex = rgbToHex(...state.colors.normal);
-      const linkHex = rgbToHex(...state.colors.link);
-      const vlinkHex = rgbToHex(...state.colors.vlink);
-      const alinkHex = rgbToHex(...state.colors.alink);
-      copyToClipboard(`<body bgcolor="${bgHex}" text="${txtHex}" link="${linkHex}" vlink="${vlinkHex}" alink="${alinkHex}">`, '<body> tag');
-    });
-    el.menuCopyCSS.addEventListener('click', () => {
-      const bgHex = rgbToHex(...state.colors.background);
-      const txtHex = rgbToHex(...state.colors.normal);
-      const linkHex = rgbToHex(...state.colors.link);
-      const vlinkHex = rgbToHex(...state.colors.vlink);
-      const alinkHex = rgbToHex(...state.colors.alink);
-      const css = `body {\n  background-color: ${bgHex};\n  color: ${txtHex};\n}\na:link {\n  color: ${linkHex};\n}\na:visited {\n  color: ${vlinkHex};\n}\na:active {\n  color: ${alinkHex};\n}`;
-      copyToClipboard(css, 'CSS');
-    });
-    el.menuExportHTML.addEventListener('click', exportHTMLFile);
-    el.menuCopyCurrentHex.addEventListener('click', () => {
-      const hex = rgbToHex(...state.colors[state.activeTarget]);
-      copyToClipboard(hex, `Hex ${hex}`);
-    });
-    el.menuRandomize.addEventListener('click', randomizeColors);
-    el.menuInvert.addEventListener('click', invertColors);
-    el.menuToggleFormat.addEventListener('click', () => {
-      if (state.outputFormat === 'html') el.tabCss.click();
-      else el.tabHtml.click();
-    });
-    el.menuToggleContrast.addEventListener('click', () => {
-      const panel = document.getElementById('contrastPanel');
-      if (panel) panel.style.display = panel.style.display === 'none' ? 'flex' : 'none';
+    // Menu Copy
+    el.menuCopy.addEventListener('click', () => {
+      const active = document.activeElement;
+      if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA')) {
+        document.execCommand('copy');
+        showToast('Copied to clipboard');
+      } else {
+        navigator.clipboard.writeText(el.txtMain.value).then(() => {
+          showToast('Copied <body ...> tag');
+        });
+      }
     });
 
-    // Global Keyboard Shortcuts
+    // Keyboard Shortcuts
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && el.aboutModal.classList.contains('open')) {
-        closeAboutModal();
+        closeAbout();
       }
     });
   }
 
-  // Initialize
+  // Init
   function init() {
-    renderQuickPalette();
     renderWebSafePalette();
     attachEventListeners();
-    updateUI();
+    FindOption();
+    FindColor();
   }
 
   if (document.readyState === 'loading') {
