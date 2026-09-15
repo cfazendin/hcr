@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTML Color Reference (HCR)</title>
+  <meta name="description" content="HTML Color Reference - The classic 1995 HTML body & color code generator recreated for the modern web.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23c0c0c0%22 rx=%2210%22/><text y=%22.9em%22 font-size=%2265%22 font-family=%22sans-serif%22 font-weight=%22bold%22 fill=%22%23000080%22>HCR</text></svg>">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-win95">
+  <!-- Top Global Bar for quick theme toggle & presets -->
+  <header class="app-toolbar">
+    <div class="toolbar-brand">
+      <span class="app-icon">🎨</span>
+      <strong>HTML Color Reference</strong>
+      <span class="version-tag">v2.04 Web</span>
+    </div>
+    <div class="toolbar-actions">
+      <label class="theme-picker-label" for="presetSelector">Preset:
+        <select id="presetSelector" class="win-select">
+          <option value="classic">1995 Default (Silver)</option>
+          <option value="win31">Windows 3.1 Hot Dog Stand</option>
+          <option value="geocities">90s GeoCities Neon</option>
+          <option value="terminal">Matrix Green Terminal</option>
+          <option value="cyberpunk">Cyberpunk 1997</option>
+          <option value="paper">Classic Paper & Ink</option>
+          <option value="solarized">Solarized Dark</option>
+          <option value="oceanic">Midnight Ocean</option>
+        </select>
+      </label>
+      <div class="theme-switch-group">
+        <button id="btnThemeWin95" class="theme-btn active" title="Windows 95 Retro Theme">💾 Win95</button>
+        <button id="btnThemeModern" class="theme-btn" title="Modern Dark/Light UI">✨ Modern</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="window-container">
+    <!-- Main Windows 95 Style Application Window -->
+    <main class="win95-window" id="mainAppWindow">
+      <!-- Title Bar -->
+      <div class="title-bar">
+        <div class="title-bar-text">
+          <svg class="win-icon" viewBox="0 0 16 16" width="16" height="16">
+            <rect width="16" height="16" fill="#000080"/>
+            <rect x="2" y="2" width="4" height="4" fill="#ff0000"/>
+            <rect x="8" y="2" width="4" height="4" fill="#00ff00"/>
+            <rect x="2" y="8" width="4" height="4" fill="#0000ff"/>
+            <rect x="8" y="8" width="4" height="4" fill="#ffff00"/>
+          </svg>
+          <span>HTML Color Reference v2.04</span>
+        </div>
+        <div class="title-bar-controls">
+          <button aria-label="Minimize" class="win-btn win-btn-control">_</button>
+          <button aria-label="Maximize" class="win-btn win-btn-control">□</button>
+          <button aria-label="Close" class="win-btn win-btn-control" id="titleBarClose">✕</button>
+        </div>
+      </div>
+
+      <!-- Menu Bar -->
+      <nav class="win-menu-bar">
+        <div class="menu-item" id="menuFile"><u>F</u>ile
+          <div class="dropdown-menu">
+            <button id="menuResetDefaults" class="menu-option">Reset to Defaults</button>
+            <button id="menuCopyFullBody" class="menu-option">Copy &lt;body&gt; Tag</button>
+            <button id="menuCopyCSS" class="menu-option">Copy CSS Styles</button>
+            <div class="menu-divider"></div>
+            <button id="menuExportHTML" class="menu-option">Export Sample HTML File</button>
+          </div>
+        </div>
+        <div class="menu-item" id="menuEdit"><u>E</u>dit
+          <div class="dropdown-menu">
+            <button id="menuCopyCurrentHex" class="menu-option">Copy Current Hex (Ctrl+C)</button>
+            <button id="menuRandomize" class="menu-option">Randomize Colors</button>
+            <button id="menuInvert" class="menu-option">Invert Colors</button>
+          </div>
+        </div>
+        <div class="menu-item" id="menuView"><u>V</u>iew
+          <div class="dropdown-menu">
+            <button id="menuToggleFormat" class="menu-option">Toggle HTML / CSS Output</button>
+            <button id="menuToggleContrast" class="menu-option">Toggle Contrast Info</button>
+          </div>
+        </div>
+        <div class="menu-item" id="menuHelp"><u>H</u>elp
+          <div class="dropdown-menu">
+            <button id="menuAbout" class="menu-option"><u>A</u>bout HTML Color Reference...</button>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Main Window Content -->
+      <div class="window-body">
+        
+        <!-- Top Section: RGB Sliders and Color Control -->
+        <section class="sliders-section">
+          <div class="sliders-container">
+            <!-- Red Slider Row -->
+            <div class="slider-row">
+              <label for="hsbRed" class="channel-label red-label"><u>R</u>ed</label>
+              <div class="slider-track-wrap">
+                <input type="range" id="hsbRed" min="0" max="255" value="192" class="rgb-slider slider-red" aria-label="Red channel">
+              </div>
+              <input type="number" id="txtRed" min="0" max="255" value="192" class="rgb-num-box" aria-label="Red channel value">
+            </div>
+
+            <!-- Green Slider Row -->
+            <div class="slider-row">
+              <label for="hsbGreen" class="channel-label green-label"><u>G</u>reen</label>
+              <div class="slider-track-wrap">
+                <input type="range" id="hsbGreen" min="0" max="255" value="192" class="rgb-slider slider-green" aria-label="Green channel">
+              </div>
+              <input type="number" id="txtGreen" min="0" max="255" value="192" class="rgb-num-box" aria-label="Green channel value">
+            </div>
+
+            <!-- Blue Slider Row -->
+            <div class="slider-row">
+              <label for="hsbBlue" class="channel-label blue-label"><u>B</u>lue</label>
+              <div class="slider-track-wrap">
+                <input type="range" id="hsbBlue" min="0" max="255" value="192" class="rgb-slider slider-blue" aria-label="Blue channel">
+              </div>
+              <input type="number" id="txtBlue" min="0" max="255" value="192" class="rgb-num-box" aria-label="Blue channel value">
+            </div>
+          </div>
+
+          <!-- Color Swatch & Extra Tools -->
+          <div class="current-color-panel">
+            <div class="current-color-preview-box" id="activeColorPreview" title="Current selected target color"></div>
+            <div class="color-picker-tools">
+              <input type="color" id="nativeColorPicker" value="#c0c0c0" title="System Color Picker">
+              <button id="btnEyeDropper" class="win-btn btn-sm" title="Pick color from screen">🔍 EyeDropper</button>
+            </div>
+            <div class="color-hex-badge" id="activeHexBadge">#C0C0C0</div>
+          </div>
+        </section>
+
+        <!-- Middle Section: Preview Box, Color Control Radio, and Tag Outputs -->
+        <section class="workspace-section">
+          <!-- Live Interactive Preview Box -->
+          <div class="preview-column">
+            <div class="preview-box" id="picColor" title="Click any element or background to select it">
+              <div class="preview-element" id="lblNormal" data-target="normal" tabindex="0" role="button" aria-label="Normal text preview">
+                This is NORMAL text
+              </div>
+              <div class="preview-element" id="lblLink" data-target="link" tabindex="0" role="button" aria-label="Link text preview">
+                This is a LINK
+              </div>
+              <div class="preview-element" id="lblVLink" data-target="vlink" tabindex="0" role="button" aria-label="Visited link preview">
+                This is a VISITED LINK
+              </div>
+              <div class="preview-element" id="lblALink" data-target="alink" tabindex="0" role="button" aria-label="Active link preview">
+                This is an ACTIVE LINK
+              </div>
+            </div>
+
+            <!-- Accessibility / Contrast feedback -->
+            <div class="contrast-panel" id="contrastPanel">
+              <span class="contrast-title">Contrast:</span>
+              <span class="contrast-badge" id="contrastNormal">Text: <strong>--</strong></span>
+              <span class="contrast-badge" id="contrastLink">Link: <strong>--</strong></span>
+              <span class="contrast-badge" id="contrastVLink">Visited: <strong>--</strong></span>
+            </div>
+          </div>
+
+          <!-- Target Selection Radio Frame -->
+          <fieldset class="win-frame color-control-frame">
+            <legend>Color Control</legend>
+            <div class="radio-options">
+              <label class="win-radio-label">
+                <input type="radio" name="targetOption" id="optBackground" value="background" checked>
+                <span>Background</span>
+              </label>
+              <label class="win-radio-label">
+                <input type="radio" name="targetOption" id="optNormal" value="normal">
+                <span>Normal Text</span>
+              </label>
+              <label class="win-radio-label">
+                <input type="radio" name="targetOption" id="optLink" value="link">
+                <span>Link Text</span>
+              </label>
+              <label class="win-radio-label">
+                <input type="radio" name="targetOption" id="optVLink" value="vlink">
+                <span>Visited Link</span>
+              </label>
+              <label class="win-radio-label">
+                <input type="radio" name="targetOption" id="optALink" value="alink">
+                <span>Active Link</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <!-- Right Column: Tag Output Fields & Buttons -->
+          <div class="tags-column">
+            <div class="tag-input-group">
+              <input type="text" id="bgTag" class="win-textbox tag-box" readonly value='bgcolor="#C0C0C0"'>
+              <button class="win-btn btn-copy" data-copy-target="bgTag" title="Copy bgcolor attribute">Copy</button>
+            </div>
+            <div class="tag-input-group">
+              <input type="text" id="txtTag" class="win-textbox tag-box" readonly value='text="#000000"'>
+              <button class="win-btn btn-copy" data-copy-target="txtTag" title="Copy text attribute">Copy</button>
+            </div>
+            <div class="tag-input-group">
+              <input type="text" id="linkTag" class="win-textbox tag-box" readonly value='link="#5500EE"'>
+              <button class="win-btn btn-copy" data-copy-target="linkTag" title="Copy link attribute">Copy</button>
+            </div>
+            <div class="tag-input-group">
+              <input type="text" id="vlinkTag" class="win-textbox tag-box" readonly value='vlink="#551A8B"'>
+              <button class="win-btn btn-copy" data-copy-target="vlinkTag" title="Copy vlink attribute">Copy</button>
+            </div>
+            <div class="tag-input-group">
+              <input type="text" id="alinkTag" class="win-textbox tag-box" readonly value='alink="#551A8B"'>
+              <button class="win-btn btn-copy" data-copy-target="alinkTag" title="Copy alink attribute">Copy</button>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons-group">
+              <button id="cmdAbout" class="win-btn action-btn">&About</button>
+              <button id="cmdExit" class="win-btn action-btn">E&xit</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Bottom Section: Combined Tag Output & Mode Selector -->
+        <section class="bottom-output-section">
+          <div class="output-header">
+            <span class="output-label">Generated Tag / Code:</span>
+            <div class="output-format-tabs">
+              <button id="tabHtml" class="tab-btn active">HTML &lt;body&gt;</button>
+              <button id="tabCss" class="tab-btn">CSS Stylesheet</button>
+            </div>
+          </div>
+          
+          <div class="full-tag-container">
+            <textarea id="txtMain" class="win-textbox full-tag-box" readonly rows="2">&lt;body bgcolor="#C0C0C0" text="#000000" link="#5500EE" vlink="#551A8B" alink="#551A8B"&gt;</textarea>
+            <button id="btnCopyMain" class="win-btn copy-all-btn">Copy Code</button>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Status Bar -->
+      <footer class="win-status-bar">
+        <div class="status-panel status-target" id="statusTarget">Active: Background (#C0C0C0)</div>
+        <div class="status-panel status-rgb" id="statusRgb">RGB(192, 192, 192)</div>
+        <div class="status-panel status-notice" id="statusNotice">Ready</div>
+      </footer>
+    </main>
+  </div>
+
+  <!-- About Dialog Modal -->
+  <div class="modal-overlay" id="aboutModal" aria-hidden="true">
+    <div class="win95-window modal-window" role="dialog" aria-labelledby="aboutDialogTitle">
+      <div class="title-bar">
+        <div class="title-bar-text" id="aboutDialogTitle">About HTML Color Reference</div>
+        <div class="title-bar-controls">
+          <button aria-label="Close" class="win-btn win-btn-control" id="modalCloseBtn">✕</button>
+        </div>
+      </div>
+      <div class="window-body modal-body">
+        <div class="about-hero">
+          <div class="about-icon">🌐</div>
+          <div>
+            <h3>HTML Color Reference</h3>
+            <p class="about-version">Version 2.04 (1995) / Modern Web Edition</p>
+          </div>
+        </div>
+
+        <div class="about-description">
+          <p>
+            A simple utility written in <strong>1995</strong> in Visual Basic 4 by <strong>Christopher Fazendin</strong> to easily configure HTML color hex codes and preview page color schemes.
+          </p>
+          <div class="about-accolade">
+            ⭐ <em>Featured in <strong>PC Magazine</strong> (Sept. 10, 1996 issue)</em>
+          </div>
+          <p class="about-links">
+            <a href="https://books.google.com/books?id=xrHwrGq70eAC&printsec=frontcover&num=100#v=onepage&q=christopher%20fazendin&f=false" target="_blank" rel="noopener noreferrer" class="web-link">
+              📖 View PC Magazine Sept 10, 1996 Feature ↗
+            </a>
+          </p>
+        </div>
+
+        <div class="modal-button-row">
+          <button id="btnModalOk" class="win-btn modal-ok-btn">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification for Copy / Feedback -->
+  <div id="toastNotification" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
