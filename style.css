@@ -132,9 +132,10 @@ body {
   color: #000000;
   border: 2px solid;
   border-color: var(--w95-light) var(--w95-darker) var(--w95-darker) var(--w95-light);
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
   z-index: 100;
-  min-width: 160px;
+  width: max-content;
+  min-width: 120px;
   padding: 2px;
 }
 
@@ -144,16 +145,24 @@ body {
 
 .menu-option {
   width: 100%;
-  text-align: left;
   background: none;
   border: none;
-  padding: 4px 10px;
+  padding: 3px 16px 3px 12px;
   font-family: inherit;
   font-size: 12px;
   cursor: pointer;
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  gap: 24px;
   color: #000000;
+  white-space: nowrap;
+}
+
+.menu-shortcut {
+  font-size: 11px;
+  color: #555555;
+  margin-left: 16px;
 }
 
 .menu-option:hover:not(:disabled) {
@@ -161,8 +170,13 @@ body {
   color: #ffffff;
 }
 
+.menu-option:hover:not(:disabled) .menu-shortcut {
+  color: #ffffff;
+}
+
 .menu-option.disabled-menu, .menu-option:disabled {
   color: #808080;
+  text-shadow: 1px 1px 0 #ffffff;
   cursor: default;
 }
 
