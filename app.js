@@ -361,7 +361,9 @@
     el.titleBarClose.addEventListener('click', handleExit);
 
     // Menu Copy
-    el.menuCopy.addEventListener('click', () => {
+    el.menuCopy.addEventListener('click', (e) => {
+      e.stopPropagation();
+      closeAllMenus();
       const active = document.activeElement;
       if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA')) {
         document.execCommand('copy');
@@ -371,6 +373,43 @@
           showToast('Copied <body ...> tag');
         });
       }
+    });
+
+    // Menubar click interactions (Open on click; switch on hover once active)
+    const menuItems = document.querySelectorAll('.win-menu-bar .menu-item');
+    let isMenuModeActive = false;
+
+    function closeAllMenus() {
+      menuItems.forEach(item => item.classList.remove('open'));
+      isMenuModeActive = false;
+    }
+
+    menuItems.forEach(item => {
+      item.addEventListener('click', (e) => {
+        // If clicking on an actual menu option inside the dropdown, handled separately
+        if (e.target.closest('.menu-option') || e.target.closest('.menu-divider')) {
+          closeAllMenus();
+          return;
+        }
+        e.stopPropagation();
+        const wasOpen = item.classList.contains('open');
+        closeAllMenus();
+        if (!wasOpen) {
+          item.classList.add('open');
+          isMenuModeActive = true;
+        }
+      });
+
+      item.addEventListener('mouseenter', () => {
+        if (isMenuModeActive) {
+          menuItems.forEach(i => i.classList.remove('open'));
+          item.classList.add('open');
+        }
+      });
+    });
+
+    document.addEventListener('click', () => {
+      closeAllMenus();
     });
 
     // System Menu on Globe Icon
@@ -444,6 +483,7 @@
     // Keyboard Shortcuts (including Alt+Space for system menu)
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
+        closeAllMenus();
         if (el.aboutModal.classList.contains('open')) closeAbout();
         if (sysMenuContainer) sysMenuContainer.classList.remove('open');
         stopWindowMove();
