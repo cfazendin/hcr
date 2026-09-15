@@ -220,11 +220,97 @@ body {
 .green-label { color: #00ff00; text-shadow: 0 0 1px #008000; }
 .blue-label { color: #0000ff; }
 
+/* Windows 95 Horizontal ScrollBar (HScrollBar) */
+.win95-scrollbar {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  height: 20px;
+  background: #c0c0c0;
+  border: 1px solid #808080;
+}
+
+.scroll-arrow-btn {
+  width: 18px;
+  height: 18px;
+  background: var(--w95-bg);
+  border: 2px solid;
+  border-color: var(--w95-light) var(--w95-darker) var(--w95-darker) var(--w95-light);
+  box-shadow: inset 1px 1px 0 var(--w95-lighter), inset -1px -1px 0 var(--w95-dark);
+  font-size: 8px;
+  line-height: 14px;
+  text-align: center;
+  padding: 0;
+  cursor: pointer;
+  color: #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.scroll-arrow-btn:active {
+  border-color: var(--w95-darker) var(--w95-light) var(--w95-light) var(--w95-darker);
+  box-shadow: inset 1px 1px 0 var(--w95-dark);
+  padding: 1px 0 0 1px;
+}
+
+/* Classic Win95 Scrollbar Track & Square Thumb */
 .rgb-slider {
   flex: 1;
-  height: 24px;
+  height: 18px;
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
   cursor: pointer;
-  accent-color: #000080;
+  /* 1995 Dithered Stipple Track (alternating silver and white pixels) */
+  background-color: #dfdfdf;
+  background-image: radial-gradient(#808080 25%, transparent 25%), radial-gradient(#ffffff 25%, transparent 25%);
+  background-size: 4px 4px;
+  background-position: 0 0, 2px 2px;
+}
+
+.rgb-slider:focus {
+  outline: none;
+}
+
+/* WebKit / Chromium / Edge Square Beveled Thumb */
+.rgb-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 18px;
+  background: var(--w95-bg);
+  border: 2px solid;
+  border-color: var(--w95-light) var(--w95-darker) var(--w95-darker) var(--w95-light);
+  box-shadow: inset 1px 1px 0 var(--w95-lighter), inset -1px -1px 0 var(--w95-dark);
+  border-radius: 0;
+  cursor: pointer;
+}
+
+.rgb-slider:active::-webkit-slider-thumb {
+  border-color: var(--w95-darker) var(--w95-light) var(--w95-light) var(--w95-darker);
+}
+
+/* Firefox Square Beveled Thumb */
+.rgb-slider::-moz-range-thumb {
+  width: 22px;
+  height: 18px;
+  background: var(--w95-bg);
+  border: 2px solid;
+  border-color: var(--w95-light) var(--w95-darker) var(--w95-darker) var(--w95-light);
+  box-shadow: inset 1px 1px 0 var(--w95-lighter), inset -1px -1px 0 var(--w95-dark);
+  border-radius: 0;
+  cursor: pointer;
+}
+
+.rgb-slider::-moz-range-track {
+  height: 18px;
+  background-color: #dfdfdf;
+  background-image: radial-gradient(#808080 25%, transparent 25%), radial-gradient(#ffffff 25%, transparent 25%);
+  background-size: 4px 4px;
+  background-position: 0 0, 2px 2px;
 }
 
 .rgb-txt {

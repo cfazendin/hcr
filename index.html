@@ -61,21 +61,33 @@
             <!-- Red Channel Row -->
             <div class="slider-row">
               <label for="hsbRed" class="channel-label red-label"><u>R</u>ed</label>
-              <input type="range" id="hsbRed" min="0" max="255" value="192" class="rgb-slider" aria-label="Red">
+              <div class="win95-scrollbar">
+                <button type="button" class="scroll-arrow-btn" id="btnRedDec" aria-label="Decrease Red">◀</button>
+                <input type="range" id="hsbRed" min="0" max="255" value="192" class="rgb-slider" aria-label="Red">
+                <button type="button" class="scroll-arrow-btn" id="btnRedInc" aria-label="Increase Red">▶</button>
+              </div>
               <input type="text" id="txtRed" maxlength="3" value="192" class="rgb-txt" aria-label="Red Value">
             </div>
 
             <!-- Green Channel Row -->
             <div class="slider-row">
               <label for="hsbGreen" class="channel-label green-label"><u>G</u>reen</label>
-              <input type="range" id="hsbGreen" min="0" max="255" value="192" class="rgb-slider" aria-label="Green">
+              <div class="win95-scrollbar">
+                <button type="button" class="scroll-arrow-btn" id="btnGreenDec" aria-label="Decrease Green">◀</button>
+                <input type="range" id="hsbGreen" min="0" max="255" value="192" class="rgb-slider" aria-label="Green">
+                <button type="button" class="scroll-arrow-btn" id="btnGreenInc" aria-label="Increase Green">▶</button>
+              </div>
               <input type="text" id="txtGreen" maxlength="3" value="192" class="rgb-txt" aria-label="Green Value">
             </div>
 
             <!-- Blue Channel Row -->
             <div class="slider-row">
               <label for="hsbBlue" class="channel-label blue-label"><u>B</u>lue</label>
-              <input type="range" id="hsbBlue" min="0" max="255" value="192" class="rgb-slider" aria-label="Blue">
+              <div class="win95-scrollbar">
+                <button type="button" class="scroll-arrow-btn" id="btnBlueDec" aria-label="Decrease Blue">◀</button>
+                <input type="range" id="hsbBlue" min="0" max="255" value="192" class="rgb-slider" aria-label="Blue">
+                <button type="button" class="scroll-arrow-btn" id="btnBlueInc" aria-label="Increase Blue">▶</button>
+              </div>
               <input type="text" id="txtBlue" maxlength="3" value="192" class="rgb-txt" aria-label="Blue Value">
             </div>
 

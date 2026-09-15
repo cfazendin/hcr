@@ -251,6 +251,30 @@
     el.hsbGreen.addEventListener('input', () => FindColor());
     el.hsbBlue.addEventListener('input', () => FindColor());
 
+    // Scrollbar Arrow Buttons (decrement / increment by 1 or large change 10 with Shift)
+    function wireArrowButtons(btnDecId, btnIncId, slider) {
+      const btnDec = document.getElementById(btnDecId);
+      const btnInc = document.getElementById(btnIncId);
+      if (btnDec) {
+        btnDec.addEventListener('click', (e) => {
+          const step = e.shiftKey ? 10 : 1;
+          slider.value = Math.max(0, parseInt(slider.value, 10) - step);
+          FindColor();
+        });
+      }
+      if (btnInc) {
+        btnInc.addEventListener('click', (e) => {
+          const step = e.shiftKey ? 10 : 1;
+          slider.value = Math.min(255, parseInt(slider.value, 10) + step);
+          FindColor();
+        });
+      }
+    }
+
+    wireArrowButtons('btnRedDec', 'btnRedInc', el.hsbRed);
+    wireArrowButtons('btnGreenDec', 'btnGreenInc', el.hsbGreen);
+    wireArrowButtons('btnBlueDec', 'btnBlueInc', el.hsbBlue);
+
     // Textboxes Keypress / Enter
     const handleTxtInput = (txtInput, slider) => {
       let val = parseInt(txtInput.value.replace(/[^0-9]/g, ''), 10);
