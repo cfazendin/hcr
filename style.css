@@ -64,6 +64,18 @@ body {
   align-items: center;
   color: white;
   font-weight: bold;
+  cursor: grab;
+  user-select: none;
+}
+
+.title-bar:active, .title-bar.is-dragging {
+  cursor: grabbing;
+}
+
+.win95-window.is-moving {
+  position: relative;
+  box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.6);
+  z-index: 50;
 }
 
 .title-bar-text {
@@ -73,7 +85,25 @@ body {
   font-size: 12px;
 }
 
-.win-icon {
+/* System Menu Container on Globe Icon */
+.system-menu-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.sys-icon {
+  display: block;
+}
+
+.sys-dropdown-menu {
+  top: 100%;
+  left: -2px;
+  margin-top: 4px;
+}
+
+.system-menu-container.open .sys-dropdown-menu {
   display: block;
 }
 

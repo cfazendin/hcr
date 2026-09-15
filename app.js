@@ -373,10 +373,88 @@
       }
     });
 
-    // Keyboard Shortcuts
+    // System Menu on Globe Icon
+    const sysMenuContainer = document.getElementById('sysMenuContainer');
+    const sysDropdownMenu = document.getElementById('sysDropdownMenu');
+    const sysMenuMove = document.getElementById('sysMenuMove');
+    const sysMenuClose = document.getElementById('sysMenuClose');
+    const mainAppWindow = document.getElementById('mainAppWindow');
+    const appTitleBar = document.getElementById('appTitleBar');
+
+    if (sysMenuContainer) {
+      sysMenuContainer.addEventListener('click', (e) => {
+        e.stopPropagation();
+        sysMenuContainer.classList.toggle('open');
+      });
+    }
+
+    document.addEventListener('click', () => {
+      if (sysMenuContainer) sysMenuContainer.classList.remove('open');
+    });
+
+    if (sysMenuClose) sysMenuClose.addEventListener('click', handleExit);
+
+    // Window Dragging & "Move" System Menu Command
+    let isDragging = false;
+    let startX = 0, startY = 0;
+    let currentX = 0, currentY = 0;
+
+    function startWindowMove(clientX, clientY) {
+      isDragging = true;
+      startX = clientX - currentX;
+      startY = clientY - currentY;
+      mainAppWindow.classList.add('is-moving');
+      appTitleBar.classList.add('is-dragging');
+    }
+
+    function onMouseMove(e) {
+      if (!isDragging) return;
+      currentX = e.clientX - startX;
+      currentY = e.clientY - startY;
+      mainAppWindow.style.transform = `translate(${currentX}px, ${currentY}px)`;
+    }
+
+    function stopWindowMove() {
+      if (!isDragging) return;
+      isDragging = false;
+      mainAppWindow.classList.remove('is-moving');
+      appTitleBar.classList.remove('is-dragging');
+    }
+
+    // Direct dragging on Title Bar
+    appTitleBar.addEventListener('mousedown', (e) => {
+      // Don't drag if clicking buttons or the system menu icon
+      if (e.target.closest('.win-btn-control') || e.target.closest('.system-menu-container')) return;
+      startWindowMove(e.clientX, e.clientY);
+    });
+
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('mouseup', stopWindowMove);
+
+    // "Move" from System Menu
+    if (sysMenuMove) {
+      sysMenuMove.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (sysMenuContainer) sysMenuContainer.classList.remove('open');
+        showToast('Click and drag the title bar or use arrow keys to move');
+        appTitleBar.classList.add('is-dragging');
+      });
+    }
+
+    // Keyboard Shortcuts (including Alt+Space for system menu)
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && el.aboutModal.classList.contains('open')) {
-        closeAbout();
+      if (e.key === 'Escape') {
+        if (el.aboutModal.classList.contains('open')) closeAbout();
+        if (sysMenuContainer) sysMenuContainer.classList.remove('open');
+        stopWindowMove();
+      }
+      if (e.altKey && (e.key === ' ' || e.code === 'Space')) {
+        e.preventDefault();
+        if (sysMenuContainer) sysMenuContainer.classList.toggle('open');
+      }
+      if (e.altKey && e.key === 'F4') {
+        e.preventDefault();
+        handleExit();
       }
     });
   }

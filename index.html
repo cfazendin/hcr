@@ -17,13 +17,24 @@
     <main class="win95-window" id="mainAppWindow">
       
       <!-- Title Bar -->
-      <div class="title-bar">
+      <div class="title-bar" id="appTitleBar">
         <div class="title-bar-text">
-          <img src="icon_globe_16.png" class="win-icon" width="16" height="16" alt="HCR Globe Icon">
+          <div class="system-menu-container" id="sysMenuContainer">
+            <img src="icon_globe_16.png" class="win-icon sys-icon" id="sysMenuIcon" width="16" height="16" alt="System Menu" title="System Menu">
+            <div class="dropdown-menu sys-dropdown-menu" id="sysDropdownMenu">
+              <div class="menu-option disabled-menu" id="sysMenuRestore"><u>R</u>estore</div>
+              <div class="menu-option" id="sysMenuMove"><u>M</u>ove</div>
+              <div class="menu-option disabled-menu" id="sysMenuSize"><u>S</u>ize</div>
+              <div class="menu-option" id="sysMenuMinimize">Mi<u>n</u>imize</div>
+              <div class="menu-option disabled-menu" id="sysMenuMaximize">Ma<u>x</u>imize</div>
+              <div class="menu-divider"></div>
+              <div class="menu-option" id="sysMenuClose"><u>C</u>lose <span class="menu-shortcut">Alt+F4</span></div>
+            </div>
+          </div>
           <span>HTML Color Reference v2.04</span>
         </div>
         <div class="title-bar-controls">
-          <button aria-label="Minimize" class="win-btn win-btn-control">_</button>
+          <button aria-label="Minimize" class="win-btn win-btn-control" id="titleBarMinimize">_</button>
           <button aria-label="Maximize" class="win-btn win-btn-control" disabled>□</button>
           <button aria-label="Close" class="win-btn win-btn-control" id="titleBarClose">✕</button>
         </div>
