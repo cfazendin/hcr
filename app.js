@@ -430,29 +430,7 @@
     showToast('Exported sample HTML file!');
   }
 
-  // Event Listeners
-  function attachEventListeners() {
-    // Sliders
-    const handleSliderInput = () => {
-      updateActiveColor(el.hsbRed.value, el.hsbGreen.value, el.hsbBlue.value);
-    };
-    el.hsbRed.addEventListener('input', handleSliderInput);
-    el.hsbGreen.addEventListener('input', handleSliderInput);
-    el.hsbBlue.addEventListener('input', handleSliderInput);
 
-    // Number textboxes
-    const handleNumberInput = () => {
-      updateActiveColor(el.txtRed.value, el.txtGreen.value, el.txtBlue.value);
-    };
-    el.txtRed.addEventListener('input', handleNumberInput);
-    el.txtGreen.addEventListener('input', handleNumberInput);
-    el.txtBlue.addEventListener('input', handleNumberInput);
-
-    // Native Color Picker
-    el.nativeColorPicker.addEventListener('input', (e) => {
-      const rgb = hexToRgb(e.target.value);
-      updateActiveColor(rgb[0], rgb[1], rgb[2]);
-    });
 
   // Render Classic 16 Palette Swatches
   function renderQuickPalette() {
